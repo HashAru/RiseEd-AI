@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("main-content");
+            sidebar.classList.toggle("-translate-x-full");
+            if (sidebar.classList.contains("-translate-x-full")) {
+                mainContent.classList.remove("ml-64");
+                mainContent.classList.add("ml-0", "md:ml-auto");
+            } else {
+                mainContent.classList.remove("ml-0", "md:ml-auto");
+                mainContent.classList.add("ml-64");
+            }
+        }
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen bg-cover bg-center" >
+
+    <!-- Hamburger Menu -->
+    <button onclick="toggleSidebar()" class="p-2 bg-blue-500 text-white m-4 rounded fixed top-4 left-4 z-50">
+        &#9776;
+    </button>
+    
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white shadow-lg p-6 fixed left-0 top-0 h-full -translate-x-full transition-transform duration-300 ease-in-out">
+        <br><br><br>
+        <h2 class="text-2xl font-bold text-blue-600 mb-4">Menu</h2>
+        <nav>
+            <ul class="space-y-4">
+                <li><a href="index.html" class="text-gray-700 hover:text-blue-500 font-semibold">Home</a></li>
+                <li><a href="study.html" class="text-gray-700 hover:text-blue-500 font-semibold">Study Material</a></li>
+                <li><a href="quizzes.html" class="text-gray-700 hover:text-blue-500 font-semibold">Quizzes</a></li>
+                <li><a href="progress.html" class="text-gray-700 hover:text-blue-500 font-semibold">Progress</a></li>
+                <li><a href="leaderboard.html" class="text-gray-700 hover:text-blue-500 font-semibold">Leaderboard</a></li>
+                <li><a href="#" onclick="logout()" class="text-red-500 font-semibold">Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+    
+
+    <div id="app" class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <div id="start-screen" class="text-center">
+            <select id="subject" class="p-2 border rounded w-full mb-4">
+                <option value="">Select Subject</option>
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="maths">Maths</option>
+                <option value="science">Science</option>
+            </select>
+            <button id="start-btn" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Start Quiz</button>
+        </div>
+        <div id="quiz-screen" class="hidden">
+            <h3 id="question" class="mb-4 font-bold"></h3>
+            <div id="options" class="flex flex-col gap-2"></div>
+            <div class="flex justify-between mt-4">
+                <button id="prev-btn" class="bg-gray-500 text-white px-4 py-2 rounded hidden">Previous</button>
+                <button id="next-btn" class="bg-blue-500 text-white px-4 py-2 rounded">Next</button>
+                <button id="submit-btn" class="bg-green-500 text-white px-4 py-2 rounded hidden">Submit</button>
+            </div>
+        </div>
+        <div id="result-screen" class="hidden text-center">
+            <h2 id="score" class="text-xl font-bold"></h2>
+            <button id="restart-btn" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Restart</button>
+        </div>
+    </div>
+    
+    <script>
+        const questions = {
+            english: [
+                { question: "What is the opposite of 'big'?", options: ["Small", "Tall", "Fast", "Thin"], answer: "Small" },
+                { question: "What is the plural of 'cat'?", options: ["Cats", "Cat's", "Cates", "Cat"], answer: "Cats" },
+                { question: "Which word is a noun?", options: ["A. Run", "B. Jump", "C. Dog", "D. Fast"], answer: "C. Dog" },
+                { question: "What is the first letter of the alphabet?", options: ["A. A", "B. B", "C. C", "D. D"], answer: "A. A" },
+                { question: "What is the color of the sky?", options: ["A. Blue", "B. Green", "C. Red", "D. Yellow"], answer: "A. Blue" }
+            ],
+            hindi: [
+                { question: "'बड़ा' का विपरीत शब्द क्या है?", options: ["छोटा", "लंबा", "मोटा", "पतला"], answer: "छोटा" },
+                { question: "'कुत्ता' कौन सा शब्द है?", options: ["A. संज्ञा", "B. क्रिया", "C. विशेषण", "D. सर्वनाम"], answer: "A. संज्ञा" },
+                { question: "'आकाश' का रंग क्या है?", options: ["A. नीला", "B. हरा", "C. लाल", "D. पीला"], answer: "A. नीला" },
+                { question: "'सेब' कौन सा फल है?", options: [           "A. केला", "B. आम", "C. सेब", "D. संतरा"], answer: "C. सेब" },
+                { question: "'नदी' किससे बनी होती है?", options: ["A. पानी", "B. रेत", "C. पहाड़", "D. पेड़"], answer: "A. पानी" }
+            ],
+            maths: [
+                { question: "What is 2 + 2?", options: ["A. 3", "B. 4", "C. 5", "D. 6"], answer: "B. 4" },
+                { question: "What is 5 - 3?", options: ["A. 1", "B. 2", "C. 3", "D. 4"], answer: "B. 2" },
+                { question: "What is 3 × 3?", options: ["A. 6", "B. 8", "C. 9", "D. 12"], answer: "C. 9" },
+                { question: "What is 10 ÷ 2?", options: ["A. 2", "B. 3", "C. 4", "D. 5"], answer: "D. 5" },
+                { question: "What is 7 + 3?", options: ["A. 8", "B. 9", "C. 10", "D. 11"], answer: "C. 10" }
+            ],
+            science: [
+                { question: "What do plants need to make food?", options: ["A. Sunlight", "B. Rocks", "C. Sand", "D. Plastic"], answer: "A. Sunlight" },
+                { question: "What gas do humans breathe in?", options: ["A. Oxygen", "B. Carbon Dioxide", "C. Nitrogen", "D. Hydrogen"], answer: "A. Oxygen" },
+                { question: "Which part of the body helps us see?", options: ["A. Ears", "B. Eyes", "C. Nose", "D. Hands"], answer: "B. Eyes" },
+                { question: "What is the main source of energy for Earth?", options: ["A. The Sun", "B. The Moon", "C. The Stars", "D. The Wind"], answer: "A. The Sun" },
+                { question: "What is H2O commonly known as?", options: ["A. Oxygen", "B. Water", "C. Hydrogen", "D. Carbon Dioxide"], answer: "B. Water" }
+            ]
+        };
+        
+        let subject = "";
+        let currentQuestion = 0;
+        let userAnswers = [];
+
+        document.getElementById("start-btn").addEventListener("click", () => {
+            subject = document.getElementById("subject").value;
+            if (!subject) return alert("Please select a subject");
+            document.getElementById("start-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const q = questions[subject][currentQuestion];
+            document.getElementById("question").innerText = `Q${currentQuestion + 1}: ${q.question}`;
+            document.getElementById("options").innerHTML = q.options.map(opt => `<button class='option-btn bg-gray-200 px-4 py-2 rounded'>${opt}</button>`).join(" ");
+            document.querySelectorAll(".option-btn").forEach((btn, idx) => {
+                btn.addEventListener("click", () => {
+                    userAnswers[currentQuestion] = q.options[idx];
+                    document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("bg-blue-400"));
+                    btn.classList.add("bg-blue-400");
+                });
+            });
+            document.getElementById("prev-btn").style.display = currentQuestion > 0 ? "block" : "none";
+            document.getElementById("next-btn").style.display = currentQuestion < questions[subject].length - 1 ? "block" : "none";
+            document.getElementById("submit-btn").style.display = currentQuestion === questions[subject].length - 1 ? "block" : "none";
+        }
+
+        document.getElementById("prev-btn").addEventListener("click", () => {
+            currentQuestion--;
+            loadQuestion();
+        });
+
+        document.getElementById("next-btn").addEventListener("click", () => {
+            currentQuestion++;
+            loadQuestion();
+        });
+
+        document.getElementById("submit-btn").addEventListener("click", () => {
+            let score = 0;
+            questions[subject].forEach((q, i) => {
+                if (q.answer === userAnswers[i]) score += 2;
+            });
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            document.getElementById("score").innerText = `Your Score: ${score}/${questions[subject].length * 2}`;
+        });
+        
+        document.getElementById("restart-btn").addEventListener("click", () => {
+            document.getElementById("result-screen").classList.add("hidden");
+            document.getElementById("start-screen").classList.remove("hidden");
+            currentQuestion = 0;
+            userAnswers = [];
+        });
+    </script>
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+        TTS: OFF 🔇
+    </button>
+</body>
+</html>

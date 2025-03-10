@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracking - RiseEd AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+    <style>
+        .background {
+            background-color: #e3e9f0;
+            background-size: cover;
+            background-position: center;
+        }
+        .border-thin {
+            border-width: 2px;
+        }
+    </style>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("main-content");
+            sidebar.classList.toggle("-translate-x-full");
+            if (sidebar.classList.contains("-translate-x-full")) {
+                mainContent.classList.remove("ml-64");
+                mainContent.classList.add("ml-0", "md:ml-auto");
+            } else {
+                mainContent.classList.remove("ml-0", "md:ml-auto");
+                mainContent.classList.add("ml-64");
+            }
+        }
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body class="background h-screen flex flex-col items-center justify-center p-8">
+
+    <!-- Hamburger Menu -->
+    <button onclick="toggleSidebar()" class="p-2 bg-blue-500 text-white m-4 rounded fixed top-4 left-4 z-50">
+        &#9776;
+    </button>
+    
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white shadow-lg p-6 fixed left-0 top-0 h-full -translate-x-full transition-transform duration-300 ease-in-out">
+        <br><br><br>
+        <h2 class="text-2xl font-bold text-blue-600 mb-4">Menu</h2>
+        <nav>
+            <ul class="space-y-4">
+                <li><a href="index.html" class="text-gray-700 hover:text-blue-500 font-semibold">Home</a></li>
+                <li><a href="study.html" class="text-gray-700 hover:text-blue-500 font-semibold">Study Material</a></li>
+                <li><a href="quizzes.html" class="text-gray-700 hover:text-blue-500 font-semibold">Quizzes</a></li>
+                <li><a href="progress.html" class="text-gray-700 hover:text-blue-500 font-semibold">Progress</a></li>
+                <li><a href="leaderboard.html" class="text-gray-700 hover:text-blue-500 font-semibold">Leaderboard</a></li>
+                <li><a href="#" onclick="logout()" class="text-red-500 font-semibold">Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+    
+    <div class="flex w-full max-w-6xl gap-8 justify-center">
+        <!-- Main Progress Tracking Section -->
+        <div class="bg-white bg-opacity-90 p-8 rounded-xl shadow-2xl w-3/4 text-gray-900 border-thin border-blue-600">
+            <h2 class="text-3xl font-extrabold text-center mb-4 text-blue-600">Your Learning Progress</h2>
+            <p class="text-center mb-6 text-gray-700 font-bold text-blue-600">Track your understanding.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-200 p-6 rounded-lg shadow-md border-thin border-blue-600">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-2">Topics Completed</h3>
+                    <ul class="list-disc pl-5 text-gray-800" id="completedTopics">
+                        <li>Introduction to Algebra</li>
+                        <li>Basic Geometry</li>
+                        <li>English Grammar - Nouns</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-red-200 p-6 rounded-lg shadow-md border-thin border-red-600">
+                    <h3 class="text-xl font-semibold text-red-600 mb-2">Areas for Improvement</h3>
+                    <ul class="list-disc pl-5 text-gray-800" id="improvementAreas">
+                        <li>Advanced Algebra</li>
+                        <li>Reading Comprehension</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-white p-6 rounded-lg shadow-md w-full border-thin border-green-600">
+                <h3 class="text-xl font-semibold text-center text-green-600 mb-4">Understanding Analysis</h3>
+                <div class="flex justify-center">
+                    <canvas id="progressChart" class="max-w-xs"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Student Details Section at Bottom Left -->
+    <!-- <div class="absolute bottom-8 left-8 bg-white bg-opacity-90 p-4 rounded-xl shadow-2xl w-1/5 text-gray-900 border-thin border-blue-600">
+        <h3 class="text-xl font-bold text-blue-600 mb-2">Student Details</h3>
+        <p class="text-gray-700"><strong>Name:</strong> John Doe</p>
+        <p class="text-gray-700"><strong>Class:</strong> 10th Grade</p>
+        <p class="text-gray-700"><strong>Username:</strong> johndoe123</p>
+    </div> -->
+
+    <script>
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Well Understood', 'Needs Improvement', 'Not Completed'],
+                datasets: [{
+                    data: [60, 30, 10],
+                    backgroundColor: ['#4CAF50', '#FF9800', '#F44336'],
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+        TTS: OFF 🔇
+    </button>
+</body>
+</html>

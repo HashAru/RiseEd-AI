@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crossword Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("main-content");
+            sidebar.classList.toggle("-translate-x-full");
+            if (sidebar.classList.contains("-translate-x-full")) {
+                mainContent.classList.remove("ml-64");
+                mainContent.classList.add("ml-0", "md:ml-auto");
+            } else {
+                mainContent.classList.remove("ml-0", "md:ml-auto");
+                mainContent.classList.add("ml-64");
+            }
+        }
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen">
+
+    <!-- Hamburger Menu -->
+    <button onclick="toggleSidebar()" class="p-2 bg-blue-500 text-white m-4 rounded fixed top-4 left-4 z-50">
+        &#9776;
+    </button>
+    
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white shadow-lg p-6 fixed left-0 top-0 h-full -translate-x-full transition-transform duration-300 ease-in-out">
+        <br><br><br>
+        <h2 class="text-2xl font-bold text-blue-600 mb-4">Menu</h2>
+        <nav>
+            <ul class="space-y-4">
+                <li><a href="index.html" class="text-gray-700 hover:text-blue-500 font-semibold">Home</a></li>
+                <li><a href="study.html" class="text-gray-700 hover:text-blue-500 font-semibold">Study Material</a></li>
+                <li><a href="quizzes.html" class="text-gray-700 hover:text-blue-500 font-semibold">Quizzes</a></li>
+                <li><a href="progress.html" class="text-gray-700 hover:text-blue-500 font-semibold">Progress</a></li>
+                <li><a href="leaderboard.html" class="text-gray-700 hover:text-blue-500 font-semibold">Leaderboard</a></li>
+                <li><a href="#" onclick="logout()" class="text-red-500 font-semibold">Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+    
+
+    <div id="app" class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+        <div id="start-screen" class="text-center">
+            <h2 class="mb-4">Select a Subject</h2>
+            <button class="subject-btn bg-blue-500 text-white px-4 py-2 rounded w-full mb-2" data-subject="english">English</button>
+            <button class="subject-btn bg-blue-500 text-white px-4 py-2 rounded w-full mb-2" data-subject="hindi">Hindi</button>
+            <button class="subject-btn bg-blue-500 text-white px-4 py-2 rounded w-full mb-2" data-subject="maths">Maths</button>
+            <button class="subject-btn bg-blue-500 text-white px-4 py-2 rounded w-full" data-subject="science">Science</button>
+        </div>
+        <div id="quiz-screen" class="hidden">
+            <h3 id="quiz-title" class="mb-4 font-bold text-center"></h3>
+            <div id="questions" class="flex flex-col gap-4"></div>
+            <button id="submit-btn" class="bg-green-500 text-white px-4 py-2 rounded w-full mt-4">Submit Answers</button>
+        </div>
+        <div id="result-screen" class="hidden text-center">
+            <h2 id="score" class="text-xl font-bold"></h2>
+            <button id="restart-btn" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Restart</button>
+        </div>
+    </div>
+    
+    <script>
+        const crosswordData = {
+            english: [
+                { clue: "A three-letter word for a domestic animal that says 'meow'", answer: "CAT" },
+                { clue: "A place where we learn", answer: "SCHOOL" },
+                { clue: "The opposite of night", answer: "DAY" },
+                { clue: "Naming words are called", answer: "NOUNS"},
+            ],
+            hindi: [
+                { clue: "तीन अक्षर का ऐसा शब्द जो एक फल का नाम है।", answer: "सेब" },
+                { clue: "ऐसा रंग जो आसमान का होता है।", answer: "नीला" },
+                { clue: "ऐसा वाहन जो पानी में चलता है।", answer: "नाव" },
+            ],
+            maths:[
+                { clue: "What is the number after 9?", answer: "TEN" },
+                { clue: "A shape with four equal sides", answer: "SQUARE" },
+                { clue: "The result of 5 + 5", answer: "TEN" },
+                { clue: "The result of 19 - 6", answer: "THIRTEEN"}
+            ],
+            science: [
+                { clue: "What do plants need to make food?", answer: "SUNLIGHT" },
+                { clue: "What do we breathe?", answer: "OXYGEN" },
+                { clue: "The planet we live on", answer: "EARTH" },
+                { clue: "How many sense organs are there?", answer: "FIVE"}
+            ],
+        };
+
+        let subject = "";
+        let userAnswers = {};
+
+        document.querySelectorAll(".subject-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                subject = btn.getAttribute("data-subject");
+                document.getElementById("start-screen").classList.add("hidden");
+                document.getElementById("quiz-screen").classList.remove("hidden");
+                loadQuestions();
+            });
+        });
+
+        function loadQuestions() {
+            document.getElementById("quiz-title").innerText = `Crossword Quiz - ${subject.toUpperCase()}`;
+            document.getElementById("questions").innerHTML = crosswordData[subject].map((q, i) => `
+                <div>
+                    <p>${q.clue}</p>
+                    <input type="text" class="answer-input p-2 border rounded w-full text-center" data-index="${i}">
+                </div>
+            `).join(" ");
+        }
+
+        document.getElementById("submit-btn").addEventListener("click", () => {
+            let score = 0;
+            document.querySelectorAll(".answer-input").forEach(input => {
+                const index = input.getAttribute("data-index");
+                userAnswers[index] = input.value.toUpperCase();
+                if (userAnswers[index] === crosswordData[subject][index].answer) {
+                    score += 2.5;
+                }
+            });
+            document.getElementById("quiz-screen").classList.add("hidden");
+            document.getElementById("result-screen").classList.remove("hidden");
+            document.getElementById("score").innerText = `Your Score: ${score} / ${crosswordData[subject].length * 2.5}`;
+        });
+        
+        document.getElementById("restart-btn").addEventListener("click", () => {
+            document.getElementById("result-screen").classList.add("hidden");
+            document.getElementById("start-screen").classList.remove("hidden");
+            userAnswers = {};
+        });
+    </script>
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+        TTS: OFF 🔇
+    </button>
+</body>
+</html>

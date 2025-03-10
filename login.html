@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up - RiseEd AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleLanguagePreference() {
+            const learningPreference = document.getElementById("learning-preference").value;
+            const languageField = document.getElementById("language-preference-field");
+            if (learningPreference === "Language Barrier") {
+                languageField.classList.remove("hidden");
+            } else {
+                languageField.classList.add("hidden");
+            }
+        }
+    </script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+</head>
+<body class="bg-blue-50" style="background-image: url('images/bg2.jpg'); background-size: cover; background-position: center;">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-600">RiseEd AI</h1>
+            <nav class="mx-5">
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="text-gray-700 hover:text-blue-500">Home</a></li>
+                    <li><a href="login.html" class="text-gray-700 hover:text-blue-500">Start Learning</a></li>
+                    <li><a href="#" class="text-gray-700 hover:text-blue-500">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 id="form-title" class="text-2xl font-bold text-center text-blue-600">Sign Up for RiseEd AI</h2>
+        
+        <!-- Sign Up Form -->
+        <div id="signup-form">
+            <label class="block text-gray-700">Full Name</label>
+            <input type="text" class="w-full p-2 border rounded-lg mb-4" id="name" placeholder="Enter your name" required>
+            
+            <label class="block text-gray-700">Username</label>
+            <input type="text" class="w-full p-2 border rounded-lg mb-4" id="signup-username" placeholder="Choose a username" required>
+            
+            <label class="block text-gray-700">Password</label>
+            <input type="password" class="w-full p-2 border rounded-lg mb-4" id="signup-password" placeholder="Enter a password" required>
+            
+            <label class="block text-gray-700">Age</label>
+            <input type="text" class="w-full p-2 border rounded-lg mb-4" placeholder="Enter your age" required>
+            
+            <label class="block text-gray-700">Class</label>
+            <select class="w-full p-2 border rounded-lg mb-4">
+                <option>Select Class</option>
+                <option>1st</option>
+                <option>2nd</option>
+                <option>3rd</option>
+                <option>4th</option>
+                <option>5th</option>
+            </select>
+            
+            <label class="block text-gray-700">Learning Preference</label>
+            <select id="learning-preference" class="w-full p-2 border rounded-lg mb-4" onchange="toggleLanguagePreference()">
+                <option value="None">No specific preference</option>
+                <option value="Language Barrier">Language Barrier</option>
+                <option value="Visual Impairment">Visual Impairment</option>
+                <option value="Hearing Impairment">Hearing Impairment</option>
+                <option value="Dyslexia">Dyslexia</option>
+            </select>
+            
+            <div id="language-preference-field" class="hidden">
+                <label class="block text-gray-700">Preferred Language</label>
+                <select class="w-full p-2 border rounded-lg mb-4">
+                    <option>Select Language</option>
+                    <option>Hindi</option>
+                    <option>English</option>
+                    <option>Bengali</option>
+                    <option>Tamil</option>
+                    <option>Marathi</option>
+                </select>
+            </div>
+            
+            <button onclick="signUp()" class="mt-4 bg-blue-500 text-white p-2 w-full rounded">Sign Up</button>
+        </div>
+        
+
+        <!-- Login Form (Hidden Initially) -->
+        <div id="login-form" class="hidden">
+            <label class="block mt-4 text-gray-700">Username:</label>
+            <input type="text" id="login-username" class="w-full p-2 border rounded">
+
+            <label class="block mt-4 text-gray-700">Password:</label>
+            <input type="password" id="login-password" class="w-full p-2 border rounded">
+
+            <button onclick="login()" class="mt-4 bg-blue-500 text-white p-2 w-full rounded">Login</button>
+
+            <p id="error-message" class="text-red-500 text-sm mt-2 text-center hidden">Invalid username or password</p>
+        </div>
+
+        <!-- Toggle Button -->
+        <p class="mt-4 text-center">
+            <a href="#" onclick="toggleForms()" class="text-blue-500 font-semibold">
+                Already have an account? Log in
+            </a>
+        </p>
+    </div>
+</div>
+
+    <script>
+        function signUp() {
+            const name = document.getElementById("name").value;
+            const username = document.getElementById("signup-username").value;
+            const password = document.getElementById("signup-password").value;
+
+            if (username && password) {
+                const user = { name, username, password };
+                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("isLoggedIn", "true");
+                window.location.href = "study.html"; // Redirects to the correct page
+            } else {
+                alert("Please fill in all fields");
+            }
+        }
+
+        function login() {
+            const username = document.getElementById("login-username").value;
+            const password = document.getElementById("login-password").value;
+
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+
+            if (storedUser && storedUser.username === username && storedUser.password === password) {
+                localStorage.setItem("isLoggedIn", "true");
+                window.location.href = "study.html"; // Redirects to the correct page
+            } else {
+                document.getElementById("error-message").classList.remove("hidden");
+            }
+        }
+
+
+        function toggleForms() {
+            const signupForm = document.getElementById("signup-form");
+            const loginForm = document.getElementById("login-form");
+            const formTitle = document.getElementById("form-title");
+
+            if (signupForm.classList.contains("hidden")) {
+                signupForm.classList.remove("hidden");
+                loginForm.classList.add("hidden");
+                formTitle.textContent = "Sign Up";
+                document.querySelector("a").textContent = "Already have an account? Log in";
+            } else {
+                signupForm.classList.add("hidden");
+                loginForm.classList.remove("hidden");
+                formTitle.textContent = "Login";
+                document.querySelector("a").textContent = "New user? Sign up";
+            }
+        }
+    </script>
+
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+        TTS: OFF 🔇
+    </button>
+</body>
+</html>

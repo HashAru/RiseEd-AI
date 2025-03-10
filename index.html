@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RiseEd AI - Inclusive Education</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+    <script defer>
+        document.addEventListener("DOMContentLoaded", function () {
+            const features = document.querySelectorAll(".carousel-item");
+            let index = 0;
+            const speechToggle = document.getElementById("speech-toggle");
+            const speechCheckbox = document.getElementById("speech-checkbox");
+            let speechEnabled = false;
+            let utterance;
+            
+            function showFeature(newIndex) {
+                features.forEach((feature, i) => {
+                    feature.classList.add("hidden");
+                });
+                index = (newIndex + features.length) % features.length;
+                features[index].classList.remove("hidden");
+            }
+            
+            document.getElementById("prev-btn").addEventListener("click", function () {
+                showFeature(index - 1);
+            });
+            
+            document.getElementById("next-btn").addEventListener("click", function () {
+                showFeature(index + 1);
+            });
+            
+            setInterval(() => showFeature(index + 1), 3000);
+            
+            // Text-to-Speech Functionality
+            function startScreenReader() {
+                if (speechEnabled) {
+                    utterance = new SpeechSynthesisUtterance("Welcome to RiseEd AI. An inclusive learning platform for every student.");
+                    speechSynthesis.speak(utterance);
+                }
+            }
+            
+            speechToggle.addEventListener("change", function () {
+                speechEnabled = speechCheckbox.checked;
+                if (speechEnabled) {
+                    startScreenReader();
+                } else {
+                    speechSynthesis.cancel();
+                }
+            });
+        });
+    </script>
+</head>
+<body class="bg-gray-100">
+    
+    <!-- Header Section -->
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-600">RiseEd AI</h1>
+            <nav class="mx-5">
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="text-gray-700 hover:text-blue-500">Home</a></li>
+                    <li><a href="login.html" class="text-gray-700 hover:text-blue-500">Start Learning</a></li>
+                    <li><a href="#" class="text-gray-700 hover:text-blue-500">Contact Us</a></li>
+                </ul>
+            </nav>
+            <!-- <label class="flex items-center space-x-2">
+                <span class="text-gray-700">Screen Reader</span>
+                <input type="checkbox" id="speech-checkbox" class="hidden">
+                <div id="speech-toggle" class="w-12 h-6 bg-gray-300 rounded-full relative cursor-pointer">
+                    <div class="w-6 h-6 bg-white rounded-full shadow-md absolute left-0 transition-transform transform"></div>
+                </div>
+            </label> -->
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="relative h-screen bg-cover bg-center" style="background-image: url('images/indexbg.jpg');">
+        <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center text-center px-6">
+            <h2 class="text-5xl font-extrabold text-white">Welcome to RiseEd AI</h2>
+            <p class="mt-4 text-xl text-gray-200">An inclusive learning platform for every student.</p>
+            <a href="login.html" class="mt-6 inline-block bg-blue-500 text-white text-lg font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-600">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Carousel -->
+    <section class="py-16 bg-white text-center">
+        <h3 class="text-3xl font-bold text-gray-900">Our Features</h3>
+        <div class="relative w-full max-w-4xl mx-auto mt-8 overflow-hidden flex items-center">
+            <button id="prev-btn" class="absolute left-0 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l">◀</button>
+            <div id="feature-carousel" class="relative w-full h-64 flex items-center justify-center">
+                <div class="carousel-item w-full flex flex-col items-center">
+                    <img src="images/studymat.jpg" class="w-40 h-40 object-cover rounded-lg" alt="Study Materials">
+                    <p class="text-xl text-gray-700 font-semibold mt-4">📚 Comprehensive Study Materials</p>
+                </div>
+                <div class="carousel-item w-full flex flex-col items-center hidden">
+                    <img src="images/video.jpg" class="w-40 h-40 object-cover rounded-lg" alt="Video Lectures">
+                    <p class="text-xl text-gray-700 font-semibold mt-4">🎥 Video Lectures from Experts</p>
+                </div>
+                <div class="carousel-item w-full flex flex-col items-center hidden">
+                    <img src="images/tests.jpg" class="w-40 h-40 object-cover rounded-lg" alt="Quizzes">
+                    <p class="text-xl text-gray-700 font-semibold mt-4">📝 Interactive Quizzes & Tests</p>
+                </div>
+                <div class="carousel-item w-full flex flex-col items-center hidden">
+                    <img src="images/progress.jpg" class="w-40 h-40 object-cover rounded-lg" alt="Track Progress">
+                    <p class="text-xl text-gray-700 font-semibold mt-4">📊 Track Your Progress</p>
+                </div>
+                <div class="carousel-item w-full flex flex-col items-center hidden">
+                    <img src="images/lang.jpg" class="w-40 h-40 object-cover rounded-lg" alt="Multilingual Support">
+                    <p class="text-xl text-gray-700 font-semibold mt-4">🌍 Multilingual Learning Support</p>
+                </div>
+            </div>
+            <button id="next-btn" class="absolute right-0 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r">▶</button>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 bg-gray-50 text-center">
+        <h3 class="text-3xl font-bold text-gray-900">How It Works</h3>
+        <div class="container mx-auto mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="p-6 bg-white shadow-md rounded-lg">
+                <h4 class="text-xl font-semibold">1. Sign Up</h4>
+                <p class="mt-2 text-gray-700">Create an account and personalize your learning experience.</p>
+            </div>
+            <div class="p-6 bg-white shadow-md rounded-lg">
+                <h4 class="text-xl font-semibold">2. Start Learning</h4>
+                <p class="mt-2 text-gray-700">Access courses, video lectures, and interactive quizzes.</p>
+            </div>
+            <div class="p-6 bg-white shadow-md rounded-lg">
+                <h4 class="text-xl font-semibold">3. Track Progress</h4>
+                <p class="mt-2 text-gray-700">Monitor your performance and earn achievements.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-900 text-white text-center py-6">
+        <p>&copy; 2025 RiseEd AI. All Rights Reserved.</p>
+    </footer>
+
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+        TTS: OFF 🔇
+    </button>
+      
+    
+</body>
+</html>

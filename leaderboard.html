@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3e9f0;
+            color: #2D2D2D;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        h1 {
+            color: #708090;
+        }
+        select {
+            margin-top: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background-color: #c5dbf8;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #aecdeb;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+    <script>
+      function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("main-content");
+            sidebar.classList.toggle("-translate-x-full");
+            if (sidebar.classList.contains("-translate-x-full")) {
+                mainContent.classList.remove("ml-64");
+                mainContent.classList.add("ml-0", "md:ml-auto");
+            } else {
+                mainContent.classList.remove("ml-0", "md:ml-auto");
+                mainContent.classList.add("ml-64");
+            }
+        }
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body>
+
+  <!-- Hamburger Menu -->
+  <button onclick="toggleSidebar()" class="p-2 bg-blue-500 text-white m-4 rounded fixed top-4 left-4 z-50">
+    &#9776;
+  </button>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="w-64 bg-white shadow-lg p-6 fixed left-0 top-0 h-full -translate-x-full transition-transform duration-300 ease-in-out">
+      <br><br><br>
+      <h2 class="text-2xl font-bold text-blue-600 mb-4">Menu</h2>
+      <nav>
+          <ul class="space-y-4">
+              <li><a href="index.html" class="text-gray-700 hover:text-blue-500 font-semibold">Home</a></li>
+              <li><a href="study.html" class="text-gray-700 hover:text-blue-500 font-semibold">Study Material</a></li>
+              <li><a href="quizzes.html" class="text-gray-700 hover:text-blue-500 font-semibold">Quizzes</a></li>
+              <li><a href="progress.html" class="text-gray-700 hover:text-blue-500 font-semibold">Progress</a></li>
+              <li><a href="leaderboard.html" class="text-gray-700 hover:text-blue-500 font-semibold">Leaderboard</a></li>
+              <li><a href="#" onclick="logout()" class="text-red-500 font-semibold">Logout</a></li>
+          </ul>
+      </nav>
+  </aside>
+
+    <h1 class="text-5xl font-bold text-center text-blue-600">Leaderboard</h1>
+    <select id="classSelect" onchange="updateTable()">
+        <option value="Class 1">Class 1</option>
+        <option value="Class 2">Class 2</option>
+        <option value="Class 3">Class 3</option>
+        <option value="Class 4">Class 4</option>
+    </select>
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody id="leaderboardBody">
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+    <script>
+        const leaderboardData = {
+            "Class 1": Array.from({ length: 10 }, (_, i) => ({ rank: i + 1, username: `student_A${i + 1}`, points: 300 - i * 10 })),
+            "Class 2": Array.from({ length: 10 }, (_, i) => ({ rank: i + 1, username: `student_B${i + 1}`, points: 290 - i * 10 })),
+            "Class 3": Array.from({ length: 10 }, (_, i) => ({ rank: i + 1, username: `student_C${i + 1}`, points: 280 - i * 10 })),
+            "Class 4": Array.from({ length: 10 }, (_, i) => ({ rank: i + 1, username: `student_D${i + 1}`, points: 270 - i * 10 }))
+        };
+
+        function updateTable() {
+            const selectedClass = document.getElementById("classSelect").value;
+            const leaderboardBody = document.getElementById("leaderboardBody");
+            leaderboardBody.innerHTML = "";
+            
+            leaderboardData[selectedClass].forEach(student => {
+                const row = `<tr>
+                    <td>${student.rank}</td>
+                    <td>${student.username}</td>
+                    <td>${student.points}</td>
+                </tr>`;
+                leaderboardBody.innerHTML += row;
+            });
+        }
+
+        // Initialize the table with default class
+        updateTable();
+    </script>
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+        TTS: OFF 🔇
+    </button>
+</body>
+</html>

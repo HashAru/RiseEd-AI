@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzes - RiseEd AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("main-content");
+            sidebar.classList.toggle("-translate-x-full");
+            if (sidebar.classList.contains("-translate-x-full")) {
+                mainContent.classList.remove("ml-64");
+                mainContent.classList.add("ml-0", "md:ml-auto");
+            } else {
+                mainContent.classList.remove("ml-0", "md:ml-auto");
+                mainContent.classList.add("ml-64");
+            }
+        }
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            window.location.href = "index.html";
+        }
+    </script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+    
+    <!-- Header -->
+    <!-- <header class="bg-white shadow-md w-full fixed top-0 left-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-600">RiseEd AI</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="index.html" class="text-gray-700 hover:text-blue-500">Home</a></li>
+                    <li><a href="study-material.html" class="text-gray-700 hover:text-blue-500">Study Materials</a></li>
+                    <li><a href="quizzes.html" class="text-gray-700 hover:text-blue-500 font-semibold">Quizzes</a></li>
+                    <li><a href="progress.html" class="text-gray-700 hover:text-blue-500">Progress</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header> -->
+
+    <!-- Hamburger Menu -->
+    <button onclick="toggleSidebar()" class="p-2 bg-blue-500 text-white m-4 rounded fixed top-4 left-4 z-50">
+        &#9776;
+    </button>
+    
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-white shadow-lg p-6 fixed left-0 top-0 h-full -translate-x-full transition-transform duration-300 ease-in-out">
+        <br><br><br>
+        <h2 class="text-2xl font-bold text-blue-600 mb-4">Menu</h2>
+        <nav>
+            <ul class="space-y-4">
+                <li><a href="index.html" class="text-gray-700 hover:text-blue-500 font-semibold">Home</a></li>
+                <li><a href="study.html" class="text-gray-700 hover:text-blue-500 font-semibold">Study Material</a></li>
+                <li><a href="quizzes.html" class="text-gray-700 hover:text-blue-500 font-semibold">Quizzes</a></li>
+                <li><a href="progress.html" class="text-gray-700 hover:text-blue-500 font-semibold">Progress</a></li>
+                <li><a href="leaderboard.html" class="text-gray-700 hover:text-blue-500 font-semibold">Leaderboard</a></li>
+                <li><a href="#" onclick="logout()" class="text-red-500 font-semibold">Logout</a></li>
+            </ul>
+        </nav>
+    </aside>
+    
+    <div class="mt-20">
+        <h1 class="text-4xl font-bold text-blue-700 text-center">Choose Your Quiz</h1>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl mx-auto mt-8 p-6">
+        <!-- MCQ Quiz -->
+        <a href="mcqquiz.html" class="group block bg-white shadow-lg rounded-lg overflow-hidden transform transition duration-300 hover:scale-105">
+            <div class="relative">
+                <img src="images/mcqquiz.jpg" class="w-full h-56 object-cover" alt="MCQ Quiz">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300"></div>
+            </div>
+            <div class="p-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition duration-300">MCQ Quiz</h2>
+                <p class="text-gray-600 mt-2">Answer multiple-choice questions and test your knowledge.</p>
+            </div>
+        </a>
+
+        <!-- Drag & Drop Quiz -->
+        <a href="dropquiz.html" class="group block bg-white shadow-lg rounded-lg overflow-hidden transform transition duration-300 hover:scale-105">
+            <div class="relative">
+                <img src="images/dropquiz.jpg" class="w-full h-56 object-cover" alt="Drag & Drop Quiz">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300"></div>
+            </div>
+            <div class="p-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition duration-300">Drag & Drop Quiz</h2>
+                <p class="text-gray-600 mt-2">Match answers correctly by dragging and dropping.</p>
+            </div>
+        </a>
+
+        <!-- Puzzle Quiz -->
+        <a href="puzzlequiz.html" class="group block bg-white shadow-lg rounded-lg overflow-hidden transform transition duration-300 hover:scale-105">
+            <div class="relative">
+                <img src="images/puzzlequiz.jpg" class="w-full h-56 object-cover" alt="Puzzle Quiz">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition duration-300"></div>
+            </div>
+            <div class="p-6 text-center">
+                <h2 class="text-2xl font-bold text-gray-800 group-hover:text-blue-600 transition duration-300">Puzzle Quiz</h2>
+                <p class="text-gray-600 mt-2">Solve interactive puzzles to challenge your brain.</p>
+            </div>
+        </a>
+    </div>
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+        TTS: OFF 🔇
+    </button>
+</body>
+</html>

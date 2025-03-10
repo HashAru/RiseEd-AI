@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tts.js"></script>
+    <script src="js/stt.js"></script>
+    <script src="js/translate.js"></script>
+    <script>
+      function toggleSidebar() {
+          const sidebar = document.getElementById("sidebar");
+          const mainContent = document.getElementById("main-content");
+          sidebar.classList.toggle("-translate-x-full");
+          if (sidebar.classList.contains("-translate-x-full")) {
+              mainContent.classList.remove("ml-64");
+              mainContent.classList.add("ml-0", "md:ml-auto");
+          } else {
+              mainContent.classList.remove("ml-0", "md:ml-auto");
+              mainContent.classList.add("ml-64");
+          }
+      }
+      function logout() {
+            localStorage.removeItem("isLoggedIn");
+            window.location.href = "index.html";
+        }
+  </script>
+</head>
+<body class="bg-blue-50 flex items-center justify-center min-h-screen">
+
+  <!-- Hamburger Menu -->
+    <button onclick="toggleSidebar()" class="p-2 bg-blue-500 text-white m-4 rounded fixed top-4 left-4 z-50">
+      &#9776;
+    </button>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="w-64 bg-white shadow-lg p-6 fixed left-0 top-0 h-full -translate-x-full transition-transform duration-300 ease-in-out">
+      <br><br><br>
+      <h2 class="text-2xl font-bold text-blue-600 mb-4">Menu</h2>
+      <nav>
+          <ul class="space-y-4">
+              <li><a href="index.html" class="text-gray-700 hover:text-blue-500 font-semibold">Home</a></li>
+              <li><a href="study.html" class="text-gray-700 hover:text-blue-500 font-semibold">Study Material</a></li>
+              <li><a href="quizzes.html" class="text-gray-700 hover:text-blue-500 font-semibold">Quizzes</a></li>
+              <li><a href="progress.html" class="text-gray-700 hover:text-blue-500 font-semibold">Progress</a></li>
+              <li><a href="leaderboard.html" class="text-gray-700 hover:text-blue-500 font-semibold">Leaderboard</a></li>
+              <li><a href="#" onclick="logout()" class="text-red-500 font-semibold">Logout</a></li>
+          </ul>
+      </nav>
+  </aside>
+
+
+    <div id="app" class="w-full max-w-md p-6 bg-white rounded-lg shadow-md text-center">
+        <div id="start-screen">
+            <h2 class="mb-4 text-xl font-bold">Select Class & Subject</h2>
+            <select id="class-select" class="p-2 border rounded w-full mb-4">
+                <option value="1">Class 1</option>
+                <option value="2">Class 2</option>
+            </select>
+            <select id="subject-select" class="p-2 border rounded w-full mb-4">
+                <option value="Maths">Maths</option>
+                <option value="Science">Science</option>
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+            </select>
+            <button id="start-btn" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Start Quiz</button>
+        </div>
+        <div id="quiz-screen" class="hidden">
+            <h3 id="question" class="mb-4 font-bold"></h3>
+            <div id="drop-zone" class="w-64 h-16 border-2 border-dashed flex items-center justify-center text-lg font-semibold mb-4">
+                Drop Answer Here
+            </div>
+            <div id="options" class="flex flex-wrap gap-2 justify-center"></div>
+            <button id="next-btn" class="bg-blue-500 text-white px-4 py-2 rounded w-full mt-4">Next</button>
+        </div>
+        <div id="result-screen" class="hidden text-center">
+            <h2 id="score" class="text-xl font-bold"></h2>
+            <button id="restart-btn" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Restart</button>
+        </div>
+    </div>
+    
+    <script>
+        const questionsData = {
+            "1_Maths": [
+                { question: "What is 2 + 2?", answer: "4", options: ["2", "3", "4", "5"] },
+                { "question": "Which number comes after 5?", "answer": "6", "options": ["4", "5", "6", "7"] },
+                { "question": "What shape has 3 sides?", "answer": "Triangle", "options": ["Square", "Rectangle", "Triangle", "Circle"] },
+                { "question": "How many fingers do you have on one hand?", "answer": "5", "options": ["3", "4", "5", "6"] },
+                { "question": "Which is the largest number?", "answer": "10", "options": ["1", "5", "10", "7"] }
+            ],
+            "1_Science": [
+                { question: "Which part of the body helps us see?", answer: "Eyes", options: ["Nose", "Ears", "Eyes", "Hands"] },
+                { "question": "What do plants need to grow?", "answer": "Sunlight", "options": ["Darkness", "Sunlight", "Plastic", "Rock"] },
+                { "question": "Which animal gives us milk?", "answer": "Cow", "options": ["Dog", "Cat", "Cow", "Elephant"] },
+                { "question": "What do we breathe in?", "answer": "Oxygen", "options": ["Water", "Oxygen", "Milk", "Juice"] },
+                { "question": "Which is the biggest planet in our solar system?", "answer": "Jupiter", "options": ["Mars", "Venus", "Earth", "Jupiter"] }
+            ],
+            "1_English":[
+                {"question": "What is the opposite of big?","answer": "Small","options": ["Small", "Tall", "Fat", "Wide"]},
+                {"question": "Which letter comes after A?","answer": "B","options": ["D", "C", "B", "E"]},
+                {"question": "What color is the grass?", "answer": "Green","options": ["Red", "Green", "Blue", "Yellow"]},
+                {"question": "How many vowels are there in English?","answer": "5","options": ["4", "5", "6", "7"]},
+                {"question": "Which animal barks?","answer": "Dog","options": ["Cat", "Dog", "Cow", "Sheep"]}
+            ],
+                "1_Hindi":[
+                {"question": "हमें दूध कौन देता है?","answer": "गाय","options": ["बिल्ली", "कुत्ता", "गाय", "हाथी"]},
+                {"question": "सूरज कब चमकता है?","answer": "दिन में","options": ["रात में", "दिन में", "शाम में", "कभी नहीं"]},
+                {"question": "आसमान का रंग क्या होता है?","answer": "नीला","options": ["लाल", "हरा", "नीला", "पीला"]},
+                {"question": "पानी कहाँ से आता है?","answer": "बादलों से","options": ["पेड़ों से", "बादलों से", "मिट्टी से", "चाँद से"]},
+                {"question": "हम हवा में क्या लेते हैं?","answer": "ऑक्सीजन","options": ["जल", "ऑक्सीजन", "दूध", "जूस"]}
+            ],
+                "2_Maths": [
+                  { "question": "What is 10 X 3?", "answer": "30", "options": ["30", "16", "75", "25"] },
+                  { "question": "What is the shape of a ball?", "answer": "Circle", "options": ["Square", "Circle", "Triangle", "Rectangle"] },
+                  { "question": "How many legs does a chair have?", "answer": "4", "options": ["2", "3", "4", "5"] },
+                  { "question": "What number comes after 9?", "answer": "10", "options": ["8", "9", "10", "11"] },
+                  { "question": "What is double of 2?", "answer": "4", "options": ["2", "3", "4", "5"] }
+                ],
+                "2_Science": [
+                  { "question": "What do we breathe in to stay alive?", "answer": "Oxygen", "options": ["Carbon", "Oxygen", "Water", "Fire"] },
+                  { "question": "Which planet do we live on?", "answer": "Earth", "options": ["Mars", "Jupiter", "Earth", "Venus"] },
+                  { "question": "What is the color of leaves?", "answer": "Green", "options": ["Red", "Blue", "Green", "Yellow"] },
+                  { "question": "What do we drink when we are thirsty?", "answer": "Water", "options": ["Juice", "Water", "Milk", "Tea"] },
+                  { "question": "What gives us light during the daytime?", "answer": "Sun", "options": ["Moon", "Stars", "Sun", "Bulb"] }
+                ],
+                "2_English": [
+                  { "question": "Which of these is a noun?", "answer": "Dog", "options": ["Run", "Dog", "Quickly", "Very"] },
+                  { "question": "What is the plural of 'Baby'?", "answer": "Babies", "options": ["Babys", "Babies", "Baby's", "Babyes"] },
+                  { "question": "Which sentence is correct?", "answer": "She is playing.", "options": ["She playing.", "She is play.", "She is playing.", "Playing she."] },
+                  { "question": "Which word is a verb?", "answer": "Jump", "options": ["Happy", "Jump", "Beautiful", "Table"] },
+                  { "question": "What is the correct article for 'apple'?", "answer": "An", "options": ["A", "An", "The", "Some"] }
+                ],
+                "2_Hindi": [
+                  { "question": "'बच्चे' शब्द कौन-सा वचन है?", "answer": "बहुवचन", "options": ["एकवचन", "बहुवचन", "सर्वनाम", "विशेषण"] },
+                  { "question": "'आम' शब्द किस संज्ञा का उदाहरण है?", "answer": "जातिवाचक संज्ञा", "options": ["व्यक्तिवाचक संज्ञा", "जातिवाचक संज्ञा", "सर्वनाम", "क्रिया"] },
+                  { "question": "इनमें से विशेषण कौन-सा शब्द है?", "answer": "मीठा", "options": ["खेल", "मीठा", "बच्चा", "नदी"] },
+                  { "question": "वाक्य में खाली स्थान भरें: वह ___ जाता है।", "answer": "स्कूल", "options": ["स्कूल", "खेल", "मीठा", "सुंदर"] },
+                  { "question": "'खेलता' शब्द कौन-सा शब्द भेद है?", "answer": "क्रिया", "options": ["संज्ञा", "क्रिया", "विशेषण", "सर्वनाम"] }
+                ]
+        };
+
+        let questions = [];
+        let currentQuestion = 0;
+        let droppedAnswer = null;
+        let score = 0;
+
+        document.getElementById("start-btn").addEventListener("click", () => {
+            const selectedClass = document.getElementById("class-select").value;
+            const selectedSubject = document.getElementById("subject-select").value;
+            questions = questionsData[`${selectedClass}_${selectedSubject}`] || [];
+            if (questions.length === 0) return alert("No questions available!");
+            document.getElementById("start-screen").classList.add("hidden");
+            document.getElementById("quiz-screen").classList.remove("hidden");
+            loadQuestion();
+        });
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById("question").innerText = q.question;
+            document.getElementById("options").innerHTML = q.options.map(opt => `<div class='draggable p-2 bg-gray-300 rounded cursor-pointer' draggable='true'>${opt}</div>`).join(" ");
+            document.querySelectorAll(".draggable").forEach(el => {
+                el.addEventListener("dragstart", event => event.dataTransfer.setData("text", el.innerText));
+            });
+            document.getElementById("drop-zone").addEventListener("dragover", event => event.preventDefault());
+            document.getElementById("drop-zone").addEventListener("drop", event => {
+                event.preventDefault();
+                droppedAnswer = event.dataTransfer.getData("text");
+                document.getElementById("drop-zone").innerText = droppedAnswer;
+            });
+        }
+
+        document.getElementById("next-btn").addEventListener("click", () => {
+            if (droppedAnswer === questions[currentQuestion].answer) score += 2;
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                droppedAnswer = null;
+                document.getElementById("drop-zone").innerText = "Drop Answer Here";
+                loadQuestion();
+            } else {
+                document.getElementById("quiz-screen").classList.add("hidden");
+                document.getElementById("result-screen").classList.remove("hidden");
+                document.getElementById("score").innerText = `Your Score: ${score}/${questions.length * 2}`;
+            }
+        });
+
+        document.getElementById("restart-btn").addEventListener("click", () => {
+            document.getElementById("result-screen").classList.add("hidden");
+            document.getElementById("start-screen").classList.remove("hidden");
+            currentQuestion = 0;
+            score = 0;
+            droppedAnswer = null;
+        });
+    </script>
+    <button id="tts-toggle" style="position: fixed; top: 10px; right: 10px; padding: 8px 15px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px;">
+      TTS: OFF 🔇
+  </button>
+</body>
+</html>

@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   
     // Attach event listeners to all input fields and textareas
-    document.querySelectorAll("input[type='text'], textarea").forEach((element) => {
+    document.querySelectorAll("input[type='text'], textarea,input[type='password']").forEach((element) => {
       element.addEventListener("focus", enableSpeechToText);
     });
   });

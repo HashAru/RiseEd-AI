@@ -22,15 +22,42 @@
                 mainContent.classList.add("ml-64");
             }
         }
-        function handleFileUpload(event) {
+        // function handleFileUpload(event) {
+        //     const uploadedFiles = document.getElementById("uploaded-files");
+        //     uploadedFiles.innerHTML = "";
+        //     for (const file of event.target.files) {
+        //         let listItem = document.createElement("li");
+        //         listItem.textContent = file.name;
+        //         listItem.classList.add("text-blue-500");
+        //         uploadedFiles.appendChild(listItem);
+        //     }
+        // }
+        function handleFileUpload() {
+            const fileInput = document.getElementById("file-upload");
             const uploadedFiles = document.getElementById("uploaded-files");
+            const uploadedFolder = document.getElementById("uploaded-folder");
+
+            if (fileInput.files.length === 0) return;
+
+            if (uploadedFiles.children.length === 1 && uploadedFiles.children[0].textContent.includes("No study material uploaded yet!")) {
+                uploadedFiles.innerHTML = "";
+            }
             uploadedFiles.innerHTML = "";
-            for (const file of event.target.files) {
+            for (const file of fileInput.files) {
                 let listItem = document.createElement("li");
-                listItem.textContent = file.name;
-                listItem.classList.add("text-blue-500");
+                let link = document.createElement("a");
+
+                link.textContent = file.name;
+                link.href = URL.createObjectURL(file);
+                link.download = file.name;
+                link.classList.add("text-blue-500", "underline");
+
+                listItem.appendChild(link);
                 uploadedFiles.appendChild(listItem);
             }
+
+            uploadedFolder.classList.remove("hidden");
+            fileInput.value = "";
         }
         function toggleChatbot() {
             const chatbot = document.getElementById("chatbot-container");
@@ -160,8 +187,8 @@
         <!-- Upload Study Material -->
         <div class="mt-6 bg-white shadow-md p-4 rounded-lg">
             <h2 class="text-lg font-semibold text-gray-700">Upload Your Study Material</h2>
-            <input type="file" class="mt-2 p-2 border rounded w-full">
-            <button class="mt-2 bg-blue-500 text-white p-2 rounded-lg">Upload</button>
+            <input type="file" id="file-upload" class="mt-2 p-2 border rounded w-full">
+            <button onlclick="handleFileUpload()" class="mt-2 bg-blue-500 text-white p-2 rounded-lg">Upload</button>
         </div>
         
     </main>
